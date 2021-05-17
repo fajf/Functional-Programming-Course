@@ -1,0 +1,56 @@
+´´´
+prvi korak je, da prvo resis tiste spremenljivke, za ketere je ocitno kaksna vrednost mora biti,
+da se lahko sploh expression evalvira v true, to na primeru izgleda takole.
+
+Imejmo cnf expression:
+(Var a) /\ Or[Var d, Var c] /\ Or [Var a, Var b, Var e] /\ (Var b) /\ (Not (Var c)) /\ Or [Var a, Var f, Var g] /\ Or [Var h, Var i, Not (Var d)]
+
+Ker so tukaj /\ vmes, je jasno, da mora Var a = True, Var b = True in Var c = False.
+
+Tako, da te spremenljivke zamenjas z ustreznimi vrednostmi. To seveda storis za vse njihove pojavitve v expressionu:
+
+True /\ Or[Var d, False] /\ Or [True, Var b, Var e] /\ (True) /\ (Not (False)) /\ Or [True, Var f, Var g] /\ Or [Var h, Var i, Not (Var d)]
+
+Zdej to stvar poenostavis z rmConstants, torej vse konstante bojo sle stran.
+
+Nastane:
+
+(Var d) /\ Or [Var f, Var g] /\ Or [Var h, Var i, Not (Var d)]
+
+Ponovis korak 1, v tem primeru je "izolirana" samo Var d in mora biti True
+
+Zamenjamo:
+
+True /\ Or [Var f, Var g] /\ Or [Var h, Var i, Not (True)]
+
+poenostavimo:
+
+Or [Var f, Var g] /\ Or [Var h, Var i]
+
+Tokrat nimamo nobene "izolirane" spremenljivke vec.
+
+Korak 2 Preverimo ce je to kar imamo ze True ali False, ce je False resitev ne obstaja, ce je True smo resitev nasli.
+
+V nasem primeru nismo se koncali. Nadaljujemo z DPLL. 
+Najdemo prvo spremenljivko v izrazu, v tem primeru "Var f" in jo nastavimo na True. (da se nam Or poenostavi). Dobimo torej:
+
+Or [True, Var g] /\ Or [Var h, Var i]
+
+Poenostavimo in dobimo:
+
+Or[Var h, Var i]
+
+Spet najdemo prvo spremenljivko in nastavimo na True. (Var h => True)
+
+Or [True, Var i]
+
+Poenostavimo in dobimo:
+
+True
+
+Ker je True,je to nasa resitev. Vrnemo seznam vseh spremenljivk, ki smo jih na True nastavili, torej : [a, b, d, f, h]
+
+
+V primeru, da bi dobili False, bi se vrnili do zadnje spremenljivke ki smo ji nastavili vrednost, Torej Var h, in bi poskusili z menjavo Var h=> False.
+´´´
+
