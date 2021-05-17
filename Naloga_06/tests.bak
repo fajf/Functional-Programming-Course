@@ -1,0 +1,6 @@
+#lang racket
+
+(display "Reverse 1")
+(displayIn (equal?
+            (reverse list (1 2 3))
+            '(3 2 1)))

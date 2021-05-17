@@ -1,0 +1,11 @@
+#lang racket
+
+(define one-two-three
+  (letrec ([one
+            (lambda (n) (cons n (thunk (one (+ (modulo n 3) 1)))))])
+    (one 1)))
+
+(define one-two-three*
+  (letrec ([one
+            (lambda (a b c) (cons a (thunk (one b c a)))))])
+    (one 1 2 3)))
